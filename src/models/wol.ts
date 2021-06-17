@@ -86,6 +86,11 @@ export enum PartType {
    assistant = "assistant"
 }
 
+export enum ClassType {
+   primary = "primary",
+   secondary = "secondary"
+}
+
 export enum Parent {
    treasures = 'treasures',
    apply = 'apply',
@@ -93,5 +98,8 @@ export enum Parent {
    talk = 'talk',
    wt = 'watchtower',
    chairman = 'chairman',
-   prayer = 'prayer'
+   prayer = 'prayer',
+   bibleReadingSecondary = 'bibleReading_secondary',
+   applySecondary = 'apply_secondary',
+   lifeSecondary = 'life_secondary',
 }

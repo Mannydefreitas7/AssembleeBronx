@@ -1,7 +1,7 @@
 import { Stack } from '@fluentui/react'
 import React, { useContext } from 'react'
 import { Part, PartType, WeekProgram } from './../models/wol';
-import { apply, chairmans, life, prayers, treasures } from '../shared/methods';
+import { apply, chairmans, life, prayers, treasures, bibleReadingSecondary} from '../shared/methods';
 import PartAssigneeButton from './PartAssigneeButton';
 import { GlobalContext } from '../store/GlobalState';
 import PartRemoveButton from './PartRemoveButton';
@@ -92,6 +92,29 @@ export default function MidWeekView({ parts, week }: { parts: Part[], week: Week
                             )
                         })
                     }
+                    <div className="mb-3 pl-8 flex flex-wrap justify-between items-center">
+                            <label className={isMobile ? 'text-xs font-bold' : 'font-bold'}>Classe Secondaire:</label>
+                            <div className="inline-flex items-center my-2">
+                            {
+                                parts && bibleReadingSecondary(parts)  ?
+                                    <PartRemoveButton
+                                        action={() => {
+                                            selectPublisher(week, bibleReadingSecondary(parts), PartType.assignee, bibleReadingSecondary(parts).assignee)
+                                            openPanel()
+                                        }}
+                                        part={bibleReadingSecondary(parts)}
+                                        publisher={bibleReadingSecondary(parts).assignee ?? {}} /> :
+                                    <PartAssigneeButton text="Assignee" action={() => {
+                                        selectPublisher(week, bibleReadingSecondary(parts), PartType.assignee, null)
+                                        openPanel()
+                                    }} />
+                            }
+                            {
+                                bibleReadingSecondary(parts) ? <PartContextMenu part={bibleReadingSecondary(parts)} /> : null
+                            }
+                            </div>
+
+                    </div>
 
                     <h4 className="my-3 font-semibold text-lg apply">APPLIQUE-TOI AU MINISTÈRE</h4>
                     {
