@@ -123,6 +123,7 @@ export default function PartContextMenu({ part } : { part: Part }) {
       {
         key: 'part',
         text: 'Part PDF',
+        disabled: part.parent === Parent.prayer || part.parent === Parent.chairman || part.parent === Parent.life,
         onClick: () => { 
           exportService.downloadPartPDF(part)
         },
