@@ -15,14 +15,12 @@ export default function PartTile({ part, publisher }: { part: Part, publisher?: 
         try {
             if (isAssignee) {
                 await firestore.doc(`congregations/${CONG_ID}/weeks/${part.week}/parts/${part.id}`)
-                .update({ assignee: null })
-              
+                .update({ assignee: null })    
             } else {
                 await firestore.doc(`congregations/${CONG_ID}/weeks/${part.week}/parts/${part.id}`)
                 .update({ assistant: null })
-                
-
             }
+            if (publisher) await firestore.doc(`congregations/${CONG_ID}/publishers/${publisher.uid}/parts/${part.id}`).delete()
             dismissPanel()
         } catch (error) { alert.error(`${error}`); console.log(error) }
     }

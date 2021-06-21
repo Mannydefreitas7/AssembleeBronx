@@ -1,5 +1,5 @@
 import { ActionButton, DefaultButton, Persona, PersonaInitialsColor, PersonaSize, PrimaryButton, Spinner, Text, TextField } from '@fluentui/react'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { GlobalContext } from '../store/GlobalState';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection,  useDocument } from 'react-firebase-hooks/firestore';
@@ -13,7 +13,7 @@ import UserRow from './UserRow';
 import { useAlert } from 'react-alert';
 
 export default function UserView() {
-    const { auth, storage, firestore, functions } = useContext(GlobalContext);
+    const { auth, storage, firestore } = useContext(GlobalContext);
     const [ userState ] = useAuthState(auth);
     const [userInfo, setUserInfo] = useState<User>();
    // const [password, setPassword] = useState<string>();
@@ -32,14 +32,11 @@ export default function UserView() {
     // eslint-disable-next-line
       }, [])
 
-    const deleteAllAnymomous = functions.httpsCallable('deleteAllAnymomous')
+   // const deleteAllAnymomous = functions.httpsCallable('deleteAllAnymomous')
 
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop})
 
-    useEffect(() => {
-        deleteAllAnymomous()
-    })
 
     const saveData = () => {
         if (auth.currentUser) {

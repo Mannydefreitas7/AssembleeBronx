@@ -41,13 +41,13 @@ export default function PartContextMenu({ part } : { part: Part }) {
 
 
   const isDisabled = () : boolean => {
-      if (part.parent === Parent.apply) {
-        if (part.assignee && !part.isEmailed) {
+      if (part.parent === Parent.apply || part.parent === Parent.secondary) {
+        if (part.assignee) {
             return false
         }
       }
       if (part.parent === Parent.treasures && part.index === 2) {
-        if (part.assignee && !part.isEmailed) {
+        if (part.assignee) {
             return false
         }
       }
@@ -87,7 +87,7 @@ export default function PartContextMenu({ part } : { part: Part }) {
   const menuItems: IContextualMenuItem[] = [
     {
         key: 'email',
-        text: part.isEmailed ? 'Emailed' : 'Email',
+        text: 'Email',
         disabled: isDisabled(),
         onClick: () => {
             emailService

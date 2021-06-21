@@ -10,6 +10,7 @@ import {
 } from 'pdfmake/interfaces';
 import moment from 'moment';
 import firebase from 'firebase/app';
+import { Classe } from '../models/group';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export class ExportService {
@@ -27,7 +28,7 @@ export class ExportService {
   partDefinition: TDocumentDefinitions = {
     pageSize: 'B7',
     info: {
-      title: 'Our Christian Life and Ministry Meeting Assignment',
+      title: 'Devoir d\'éléve a la Réunion\n Vie Chrétienne et Ministere',
     },
     content: [],
     pageMargins: [15, 10, 15, 10],
@@ -71,12 +72,25 @@ export class ExportService {
       color: '#808080',
     },
     part: {
-      fontSize: 12,
+      fontSize: 10,
       bold: false,
       color: '#000000',
     },
+    partSecondary: {
+      fontSize: 10,
+      bold: true,
+      color: '#000000',
+      margin: [0, 2],
+    },
     partValue: {
-      fontSize: 12,
+      fontSize: 10,
+      bold: true,
+      color: '#000000',
+      alignment: 'right',
+      margin: [0, 2],
+    },
+    partValueSecondary: {
+      fontSize: 8,
       bold: true,
       color: '#000000',
       alignment: 'right',
@@ -127,6 +141,8 @@ export class ExportService {
   ): {
     treasures: Part[];
     apply: Part[];
+    applySecondary: Part[];
+    bibleSecondary: Part;
     life: Part[];
     talk: Part[];
     wt: Part[];
@@ -137,6 +153,14 @@ export class ExportService {
       treasures: parts
         .filter((part) => part.parent === Parent.treasures)
         .sort((a, b) => (a.index ?? 0) - (b.index ?? 1)),
+      bibleSecondary: parts
+        .filter((part) => part.parent === Parent.secondary)
+        .sort((a, b) => (a.index ?? 0) - (b.index ?? 1))[0],
+      applySecondary: parts
+      .filter((part) => part.parent === Parent.secondary)
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 1))
+      .slice(1, parts
+        .filter((part) => part.parent === Parent.secondary).length),
       apply: parts
         .filter((part) => part.parent === Parent.apply)
         .sort((a, b) => (a.index ?? 0) - (b.index ?? 1)),
@@ -170,7 +194,7 @@ export class ExportService {
           pdfMake
             .createPdf(this.partDefinition)
             .download(
-              `Meeting-Assignment-${moment(part.date.toDate()).format(
+              `Fiche_Exposé_à_la_réunion_Vie_chrétienne_et_ministère-${moment(part.date.toDate()).locale('fr').format(
                 'MMM-DD-YY'
               )}-${
                 part?.assignee?.firstName?.slice(0, 1) +
@@ -187,14 +211,14 @@ export class ExportService {
   parsePart(part: Part) : Content {
     let content : Content = [
       {
-        text: 'Our Christian Life and Ministry\nMeeting Assignment\n'.toUpperCase(),
+        text: 'Devoir D\'éléve a la réunion\n vie chrétienne et ministere\n'.toUpperCase(),
         style: 'title',
         margin: [0, 0, 0, 20],
       },
       {
         text: [
           {
-            text: `Name: `,
+            text: `Nom: `,
             style: 'label',
           },
           {
@@ -213,7 +237,7 @@ export class ExportService {
       {
         text: [
           {
-            text: `Assistant: `,
+            text: `Interlocuteur: `,
             style: 'label',
           },
           {
@@ -241,7 +265,7 @@ export class ExportService {
         margin: [0, 0, 0, 10],
       },
       {
-        text: 'Assignment',
+        text: 'Devoir d\'éléve :',
         style: 'label',
         margin: [0, 10, 0, 5],
       },
@@ -251,24 +275,24 @@ export class ExportService {
         margin: [10, 0, 0, 10],
       },
       {
-        text: 'To be given:',
+        text: 'A présenter dans:',
         style: 'label',
         margin: [0, 0, 0, 5],
       },
       {
-        text: 'Main Hall',
+        text: part && part.assignee && part.parent === Parent.secondary ? 'Deuxieme Salle' : 'Salle Principale',
         style: 'value',
         margin: [10, 0, 0, 20],
       },
       {
         text: [
           {
-            text: 'Note to student: ',
+            text: 'A présenter dans: ',
             style: 'noteLabel',
           },
           {
             text:
-              'The source material and study point for your assignment can be found in the Life and Ministry Meeting Workbook. Please work on the listed study point, which is discussed in the Teaching brochure.',
+              'Les sources pour ton devoir et le point que tu dois travailler dont précisés dans le Cahier Vie et ministere. Chaque point a travailler fait l\'objet d\'une leçon de la brochure Enseignement.',
             style: 'note',
           },
         ],
@@ -351,6 +375,7 @@ export class ExportService {
         {
           markerColor: '#808080',
           ul: filteredParts.treasures.map((part) => {
+
             return {
               columns: [
                 {
@@ -367,7 +392,28 @@ export class ExportService {
               ],
               margin: [0, 10, 0, 0],
             };
+
           }),
+        },
+        {
+          markerColor: '#808080',
+          ul: [
+            {
+              columns: [
+                {
+                  text: 'Classe Secondaire',
+                  style: 'partSecondary',
+                },
+                {
+                  text:
+                  filteredParts.bibleSecondary && filteredParts.bibleSecondary.assignee
+                      ? `${filteredParts.bibleSecondary.assignee.firstName} ${filteredParts.bibleSecondary.assignee.lastName}`
+                      : '',
+                  style: 'partValueSecondary',
+                },
+              ],
+            }
+          ]
         },
         {
           text: 'APPLIQUE-TOI AU MINISTÈRE',
@@ -376,7 +422,7 @@ export class ExportService {
         },
         {
           markerColor: '#808080',
-          ul: filteredParts.apply.map((part) => {
+          ul: filteredParts.apply.map((part, index) => {
             return {
               columns: [
                 [
@@ -387,6 +433,10 @@ export class ExportService {
                   {
                     text: part && part.assistant ? `Interlocuteur` : '',
                     style: 'part',
+                  },
+                  {
+                    text: 'Classe Secondaire',
+                    style: 'partSecondary',
                   },
                 ],
                 [
@@ -403,6 +453,15 @@ export class ExportService {
                         ? `${part.assistant.firstName} ${part.assistant.lastName}`
                         : '',
                     style: 'partValue',
+                  },
+                  {
+                    text:
+                      filteredParts.applySecondary.length > 0 && filteredParts.applySecondary[index] && filteredParts.applySecondary[index].assignee
+                        ? `${filteredParts.applySecondary[index].assignee?.firstName} ${filteredParts.applySecondary[index].assignee?.lastName} / ${filteredParts.applySecondary.length > 0 && filteredParts.applySecondary[index] && filteredParts.applySecondary[index].assistant
+                          ? `${filteredParts.applySecondary[index].assistant?.firstName} ${filteredParts.applySecondary[index].assistant?.lastName}`
+                          : ''}`
+                        : '',
+                    style: 'partValueSecondary',
                   },
                 ],
               ],

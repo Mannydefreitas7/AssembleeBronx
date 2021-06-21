@@ -1,11 +1,13 @@
-import moment from 'moment';
+import * as moment from 'moment';
 import { v4 } from 'uuid';
 import { CONG_ID, wolURL } from '../constants';
 import { Congregation } from '../models/congregation';
 import { Gender, Privilege } from '../models/publisher';
 import { Parent, Part, WeekProgram, WOLWeek } from '../models/wol';
 import firebase from 'firebase/app';
-
+import fetch, { Response } from 'node-fetch';
+import { JSDOM } from 'jsdom';
+import * as functions from "firebase-functions";
 export class WOLApi {
   async getWeekProgram(
     year: number,
@@ -14,6 +16,7 @@ export class WOLApi {
     apiURL: string
   ): Promise<Response> {
     let url = `${wolURL}${apiURL}${year}/${month}/${day}`;
+    functions.logger.log(url)
     return await fetch(url);
   }
 
@@ -23,11 +26,7 @@ export class WOLApi {
     path: string,
     weekID: string
   ): Part[] {
-    const parse = new DOMParser();
-    let midContent: Document = parse.parseFromString(
-      wolWeek.items[1].content,
-      'text/html'
-    );
+    let midContent: Document = new JSDOM(wolWeek.items[1].content).window.document;
     let parts: Part[] = [];
 
     // Treasures
@@ -36,7 +35,6 @@ export class WOLApi {
       ?.querySelector('ul')
       ?.querySelectorAll('.so')
       .forEach((element, i) => {
-
         let time = element?.textContent?.match(/\(([^)]+)\)/) ?? [];
 
         parts.push({
@@ -51,9 +49,6 @@ export class WOLApi {
           subTitle: '',
           path: path,
           title: element?.textContent ?? '',
-          lengthTime: moment((time[1].match(/\d+/) ?? [])[0])
-            .toDate()
-            .getTime(),
           index: i,
           isConfirmed: false,
           isEmailed: false,
@@ -62,7 +57,6 @@ export class WOLApi {
           date: date,
           week: weekID,
         });
-
         if (i === 2) {
           parts.push({
             hasDiscussion: false,
@@ -74,8 +68,9 @@ export class WOLApi {
             subTitle: '',
             path: path,
             title: element?.textContent ?? '',
-            index: 0,
-            isConfirmed: false,
+           
+            index: i,
+            isConfirmed: false, 
             isEmailed: false,
             isCalendarAdded: false,
             parent: Parent.secondary,
@@ -83,7 +78,6 @@ export class WOLApi {
             week: weekID,
           });
         }
-
       });
     parts[1].hasDiscussion = true;
 
@@ -93,7 +87,6 @@ export class WOLApi {
       ?.querySelector('ul')
       ?.querySelectorAll('.so')
       .forEach((element, i) => {
-
         let time = element?.textContent?.match(/\(([^)]+)\)/) ?? [];
 
         parts.push({
@@ -111,9 +104,7 @@ export class WOLApi {
           isEmailed: false,
           subTitle: '',
           title: element?.textContent ?? '',
-          lengthTime: moment((time[1].match(/\d+/) ?? [])[0])
-            .toDate()
-            .getTime(),
+         
           index: i,
           isCalendarAdded: false,
           isConfirmed: false,
@@ -145,11 +136,7 @@ export class WOLApi {
           date: date,
           week: weekID,
         });
-
-
       });
-
-      
 
     // Living
     let lifeParts: Part[] = [];
@@ -159,7 +146,6 @@ export class WOLApi {
       ?.querySelectorAll('li')
       .forEach((element, i) => {
         let time = element?.textContent?.match(/\(([^)]+)\)/) ?? [];
-
         lifeParts.push({
           hasDiscussion: false,
           hasAssistant: false,
@@ -167,11 +153,7 @@ export class WOLApi {
           gender: [Gender.brother],
           id: v4(),
           length: element?.textContent?.match(/\(([^)]+)\)/) ? time[1] : '',
-          lengthTime: element?.textContent?.match(/\(([^)]+)\)/)
-            ? moment((time[1].match(/\d+/) ?? [])[0])
-                .toDate()
-                .getTime()
-            : 10,
+          
           privilege: [Privilege.elder, Privilege.ms],
           subTitle: '',
           title: element?.textContent ?? '',
@@ -183,8 +165,6 @@ export class WOLApi {
           date: date,
           week: weekID,
         });
-
-
       });
 
     lifeParts.pop();
@@ -219,11 +199,7 @@ export class WOLApi {
     path: string,
     weekID: string
   ): Part[] {
-    const parse = new DOMParser();
-    let endContent: Document = parse.parseFromString(
-      wolWeek.items[wolWeek.items.length - 1].content,
-      'text/html'
-    );
+    let endContent: Document = new JSDOM(wolWeek.items[wolWeek.items.length - 1].content).window.document;
     let parts: Part[] = [];
     parts.push(
       {
@@ -255,7 +231,7 @@ export class WOLApi {
         length: '60',
         path: path,
         isCalendarAdded: false,
-        lengthTime: moment('01:00:00', 'hh:mm:ss').toDate().getTime(),
+        
         privilege: [Privilege.elder],
         index: 1,
         isEmailed: false,
@@ -314,6 +290,29 @@ export class WOLApi {
     return parts;
   }
 
+  addSecondaryParts(date: Date, part: Part, path: string, weekID: string): Part[] {
+    let parts: Part[] = [];
+    for (var c = 0; c < 4; c++) {
+      parts.push({
+        id: v4(),
+        hasDiscussion: false,
+        hasAssistant: false,
+        gender: [Gender.brother, Gender.sister],
+        isConfirmed: false,
+        index: c,
+        isCalendarAdded: false,
+        path: path,
+        parent: Parent.secondary,
+        title: part.title,
+        isEmailed: false,
+        date: date,
+        privilege: [Privilege.elder, Privilege.ms],
+        week: weekID,
+      });
+    }
+    return parts;
+  }
+
   parseWolContent(
     wolWeek: WOLWeek,
     date: Date,
@@ -354,9 +353,7 @@ export class WOLApi {
             subTitle: '',
             path: path,
             title: element?.textContent ?? '',
-            lengthTime: moment((time[1].match(/\d+/) ?? [])[0])
-              .toDate()
-              .getTime(),
+           
             index: i,
             isConfirmed: false,
             isEmailed: false,
@@ -390,9 +387,7 @@ export class WOLApi {
             isEmailed: false,
             subTitle: '',
             title: element?.textContent ?? '',
-            lengthTime: moment((time[1].match(/\d+/) ?? [])[0])
-              .toDate()
-              .getTime(),
+          
             index: i,
             isCalendarAdded: false,
             isConfirmed: false,
@@ -417,11 +412,7 @@ export class WOLApi {
             gender: [Gender.brother],
             id: v4(),
             length: element?.textContent?.match(/\(([^)]+)\)/) ? time[1] : '',
-            lengthTime: element?.textContent?.match(/\(([^)]+)\)/)
-              ? moment((time[1].match(/\d+/) ?? [])[0])
-                  .toDate()
-                  .getTime()
-              : 10,
+         
             privilege: [Privilege.elder, Privilege.ms],
             subTitle: '',
             title: element?.textContent ?? '',
@@ -489,7 +480,6 @@ export class WOLApi {
             gender: [Gender.brother],
             id: v4(),
             length: '30',
-            lengthTime: moment('00:30:00', 'hh:mm:ss').toDate().getTime(),
             privilege: [Privilege.elder, Privilege.ms],
             title: '',
             path: path,
@@ -514,7 +504,7 @@ export class WOLApi {
             length: '60',
             path: path,
             isCalendarAdded: false,
-            lengthTime: moment('01:00:00', 'hh:mm:ss').toDate().getTime(),
+           
             privilege: [Privilege.elder, Privilege.ms],
             index: 1,
             isEmailed: false,

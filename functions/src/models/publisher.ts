@@ -1,6 +1,5 @@
 
 import { Congregation } from "./congregation";
-import { Classe } from "./group";
 import { Part } from "./wol";
 
 export class Publisher {
@@ -18,7 +17,6 @@ export class Publisher {
    groupId?: string;
    userId?: string;
    isReader?: boolean;
-   classe?: Classe | string;
    talks?: Talk[];
    isOutGoing?: boolean;
 };

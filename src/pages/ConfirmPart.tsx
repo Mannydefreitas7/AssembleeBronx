@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import { CONG_ID } from '../constants';
-import { Part } from '../models/wol';
+import { Parent, Part } from '../models/wol';
 import { useQuery } from '../shared/hooks';
 import { GlobalContext } from '../store/GlobalState';
 
@@ -21,9 +21,6 @@ export default function ConfirmPart() {
     }
     useEffect(() => {
         if (!user) auth.signInAnonymously()
-        return () => {
-            if (user) auth.signOut()
-        }
     // eslint-disable-next-line
     }, [])
 
@@ -37,31 +34,31 @@ export default function ConfirmPart() {
     return (
                 <div className="flex justify-center items-center h-screen">
                     <div className="bg-white p-5 shadow rounded w-96">
-                        <h3 className="font-bold text-center mb-4 text-xl">Meeting Assignment</h3>
+                        <h3 className="font-bold text-center mb-4 text-xl">Devoir d'éléve a la Réunion Vie Chrétienne et Ministere</h3>
                         {
                             partLoading ? <Spinner /> :
                                 <div className="p-2">
                                     <p className="mb-1">
-                                        <strong>Name:</strong> <span className="ms-2">{part?.assignee?.firstName} {part?.assignee?.lastName}</span>
+                                        <strong>Nom:</strong> <span className="ms-2">{part?.assignee?.firstName} {part?.assignee?.lastName}</span>
                                     </p>
                                     <p className="mb-1">
-                                        <strong>Assistant:</strong> <span className="ml-2">{part?.assistant?.firstName} {part?.assistant?.lastName}</span>
+                                        <strong>Interlocuteur:</strong> <span className="ml-2">{part?.assistant?.firstName} {part?.assistant?.lastName}</span>
                                     </p>
                                     <p className="mb-4">
                                         <strong>Date:</strong> <span className="ml-2">{moment(part?.date?.toDate()).format('MMM d, y')}</span>
                                     </p>
-                                    <p className="mb-2"><strong>Assignment</strong></p>
+                                    <p className="mb-2"><strong>Devoir d'Eléve</strong></p>
                                     <p className="ml-4 mb-4">{part?.title}</p>
 
-                                    <p className="mb-2"><strong>To be given:</strong></p>
-                                    <p className="ml-4 mb-4">Main Hall</p>
+                                    <p className="mb-2"><strong>A présenter dans:</strong></p>
+                                    <p className="ml-4 mb-4">{part.parent === Parent.secondary ? 'Salle Secondaire' : 'Salle Principale'}</p>
                                 </div>
                         }
                         <hr />
                         {
                             partLoading ? <Spinner /> :
-                            part.isConfirmed ? <div className="mt-4 text-center text-lg"><Text>Thank you! Your part is confirmed.</Text></div> :
-                            <PrimaryButton className="block w-full mt-4" text="Confirm" onClick={confirmPart} />
+                            part.isConfirmed ? <div className="mt-4 text-center text-lg"><Text>Merci! Ton devoir est confirmé.</Text></div> :
+                            <PrimaryButton className="block w-full mt-4" text="Confirmer" onClick={confirmPart} />
                         }
                 </div>
             </div>

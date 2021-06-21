@@ -2,8 +2,8 @@ import React, { useContext, useState } from 'react'
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Dropdown, IDropdownOption } from '@fluentui/react/lib/Dropdown';
-import { Part, WeekProgram } from '../models/wol';
-import { apply, chairmans, life, prayers, talk, treasures, wt } from '../shared/methods';
+import { Parent, Part, WeekProgram } from '../models/wol';
+import { apply, chairmans, life, prayers, talk, treasures, wt, applySecondary, bibleReadingSecondary } from '../shared/methods';
 import { GlobalContext } from '../store/GlobalState';
 import { DefaultButton, Text } from '@fluentui/react';
 import { ExportService } from '../services/export';
@@ -91,16 +91,25 @@ const WeekSchedule = () => {
               )
             })
           }
-          
+          <div className="mt-3 px-6 flex flex-wrap justify-between items-center">
+              <label className={'font-bold ml-4 w-2/3 text-green-700'}>Classe Secondaire:</label>
+              <PartInfo part={bibleReadingSecondary(parts)} />
+          </div>
           <h4 className="my-3 font-semibold text-lg apply">APPLIQUE-TOI AU MINISTÈRE</h4>
           {
-            parts && apply(parts).map(part => {
+            parts && apply(parts).map((part, index) => {
               return (
-                <div className="mt-3 pl-4 flex flex-wrap justify-between items-center" key={part.id}>
-                  <label className="w-2/3">
-                    {part.title}
-                  </label>
-                  <PartInfo part={part} />
+                <div key={part.id}>
+                  <div className="mt-3 pl-4 flex flex-wrap justify-between items-center">
+                    <label className="w-2/3">
+                      {part.title}
+                    </label>
+                    <PartInfo part={part} />
+                  </div>
+                  <div className="mt-3 px-6 flex flex-wrap justify-between items-center">
+                      <label className={'font-bold ml-4 w-2/3 text-green-700'}>Classe Secondaire:</label>
+                      <PartInfo part={applySecondary(parts)[index]} />
+                  </div>
                 </div>
               )
             })
@@ -159,7 +168,7 @@ export const PartInfo = ({ part }: PartInfoProp) => {
     <>
       {
         part.assignee ?
-          <p className="sm:text-left md:text-right mb-0">
+          <p className={`sm:text-left md:text-right mb-0 ${part.parent === Parent.secondary ? 'text-green-800' : ""}`}>
             <span className="mr-2 italic font-bold">{part.assignee?.firstName} {part.assignee?.lastName}</span> <br />
             {
               part.assistant ?

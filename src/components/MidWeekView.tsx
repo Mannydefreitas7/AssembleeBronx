@@ -1,7 +1,7 @@
 import { Stack } from '@fluentui/react'
 import React, { useContext } from 'react'
 import { Part, PartType, WeekProgram } from './../models/wol';
-import { apply, chairmans, life, prayers, treasures, bibleReadingSecondary} from '../shared/methods';
+import { apply, chairmans, life, prayers, treasures, bibleReadingSecondary, applySecondary} from '../shared/methods';
 import PartAssigneeButton from './PartAssigneeButton';
 import { GlobalContext } from '../store/GlobalState';
 import PartRemoveButton from './PartRemoveButton';
@@ -96,7 +96,7 @@ export default function MidWeekView({ parts, week }: { parts: Part[], week: Week
                             <label className={isMobile ? 'text-xs font-bold' : 'font-bold'}>Classe Secondaire:</label>
                             <div className="inline-flex items-center my-2">
                             {
-                                parts && bibleReadingSecondary(parts)  ?
+                                parts && bibleReadingSecondary(parts).assignee  ?
                                     <PartRemoveButton
                                         action={() => {
                                             selectPublisher(week, bibleReadingSecondary(parts), PartType.assignee, bibleReadingSecondary(parts).assignee)
@@ -113,48 +113,86 @@ export default function MidWeekView({ parts, week }: { parts: Part[], week: Week
                                 bibleReadingSecondary(parts) ? <PartContextMenu part={bibleReadingSecondary(parts)} /> : null
                             }
                             </div>
-
                     </div>
 
                     <h4 className="my-3 font-semibold text-lg apply">APPLIQUE-TOI AU MINISTÈRE</h4>
                     {
-                        parts && apply(parts).map(part => {
+                        parts && apply(parts).map((part, index) => {
                             return (
-                                <div className="mt-3 pl-4 flex flex-wrap justify-between items-center" key={part.id}>
-                                    <label className={isMobile ? 'text-xs' : 'w-2/3'}>{part.title}</label>
-                                    <div className="inline-flex flex-wrap items-center my-2">
-                                        {
-                                            part && part.assignee ?
-                                                <PartRemoveButton
-                                                    action={() => {
-                                                        selectPublisher(week, part, PartType.assignee, part.assignee)
+                                <div key={part.id}>
+                                    <div className="mt-3 pl-4 flex flex-wrap justify-between items-center">
+                                        <label className={isMobile ? 'text-xs' : 'w-2/3'}>{part.title}</label>
+                                        <div className="inline-flex flex-wrap items-center my-2">
+                                            {
+                                                part && part.assignee ?
+                                                    <PartRemoveButton
+                                                        action={() => {
+                                                            selectPublisher(week, part, PartType.assignee, part.assignee)
+                                                            openPanel()
+                                                        }}
+                                                        part={part}
+                                                        publisher={part.assignee ?? {}} /> :
+                                                    <PartAssigneeButton text="Assignee" action={() => {
+                                                        selectPublisher(week, part, PartType.assignee, null)
                                                         openPanel()
-                                                    }}
-                                                    part={part}
-                                                    publisher={part.assignee ?? {}} /> :
-                                                <PartAssigneeButton text="Assignee" action={() => {
-                                                    selectPublisher(week, part, PartType.assignee, null)
-                                                    openPanel()
-                                                }} />
-                                        }
-                                        <span className="text-gray-200 mx-1">-</span>
-                                        {
-                                            part && part.assistant ?
-                                                <PartRemoveButton
-                                                    action={() => {
-                                                        selectPublisher(week, part, PartType.assistant, part.assistant)
+                                                    }} />
+                                            }
+                                            <span className="text-gray-200 mx-1">-</span>
+                                            {
+                                                part && part.assistant ?
+                                                    <PartRemoveButton
+                                                        action={() => {
+                                                            selectPublisher(week, part, PartType.assistant, part.assistant)
+                                                            openPanel()
+                                                        }}
+                                                        part={part}
+                                                        publisher={part.assistant ?? {}} /> :
+                                                    <PartAssigneeButton text="Assistant" action={() => {
+                                                        selectPublisher(week, part, PartType.assistant, null)
                                                         openPanel()
-                                                    }}
-                                                    part={part}
-                                                    publisher={part.assistant ?? {}} /> :
-                                                <PartAssigneeButton text="Assistant" action={() => {
-                                                    selectPublisher(week, part, PartType.assistant, null)
-                                                    openPanel()
-                                                }} />
-                                        }
-                                        {
-                                            part ? <PartContextMenu part={part} /> : null
-                                        }
+                                                    }} />
+                                            }
+                                            {
+                                                part ? <PartContextMenu part={part} /> : null
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="mb-3 pl-8 flex flex-wrap justify-between items-center">
+                                        <label className={isMobile ? 'text-xs font-bold' : 'font-bold'}>Classe Secondaire:</label>
+                                        <div className="inline-flex flex-wrap items-center my-2">
+                                            {
+                                                parts.length > 0 && applySecondary(parts)[index] && applySecondary(parts)[index].assignee ?
+                                                    <PartRemoveButton
+                                                        action={() => {
+                                                            selectPublisher(week, applySecondary(parts)[index], PartType.assignee, applySecondary(parts)[index].assignee)
+                                                            openPanel()
+                                                        }}
+                                                        part={applySecondary(parts)[index]}
+                                                        publisher={applySecondary(parts)[index].assignee ?? {}} /> :
+                                                    <PartAssigneeButton text="Assignee" action={() => {
+                                                        selectPublisher(week, applySecondary(parts)[index], PartType.assignee, null)
+                                                        openPanel()
+                                                    }} />
+                                            }
+                                            <span className="text-gray-200 mx-1">-</span>
+                                            {
+                                                parts.length > 0 && applySecondary(parts)[index] && applySecondary(parts)[index].assistant ?
+                                                    <PartRemoveButton
+                                                        action={() => {
+                                                            selectPublisher(week, applySecondary(parts)[index], PartType.assistant, applySecondary(parts)[index].assistant)
+                                                            openPanel()
+                                                        }}
+                                                        part={applySecondary(parts)[index]}
+                                                        publisher={applySecondary(parts)[index].assistant ?? {}} /> :
+                                                    <PartAssigneeButton text="Assistant" action={() => {
+                                                        selectPublisher(week, applySecondary(parts)[index], PartType.assistant, null)
+                                                        openPanel()
+                                                    }} />
+                                            }
+                                            {
+                                                applySecondary(parts)[index] ? <PartContextMenu part={applySecondary(parts)[index]} /> : null
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             )

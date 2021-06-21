@@ -11,7 +11,7 @@ import { useBoolean } from '@fluentui/react-hooks';
 import { SharedColors } from '@fluentui/theme'
 import SelectTalkOutlineView from '../components/SelectTalkOutlineView';
 import TalkTile from '../components/TalkTile';
-import { Group } from '../models/group';
+import { Classe, Group } from '../models/group';
 
 export default function PublisherDetail() {
 
@@ -34,16 +34,29 @@ export default function PublisherDetail() {
         ...documentSnapshot?.data()
     } : {}
     const [pub, setPublisher] = useState<Publisher>({
-        firstName: publisher.firstName, 
-        lastName: publisher.lastName, 
-        email: publisher.email,
-        groupId: publisher.groupId
+        ...publisher
     })
     const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
     
+    const classOptions: IDropdownOption[] = [
+        {
+            text: 'Principale',
+            key: Classe.primary,
+            data: Classe.primary
+        },
+        {
+            text: 'Secondaire',
+            key: Classe.secondary,
+            data: Classe.secondary
+        },{
+            text: 'Secondaire',
+            key: Classe.secondary,
+            data: Classe.secondary
+        }
+    ]
 
     const invite = () => {
-        let url: string = `https://assemblee.web.app/invite?cong=${congregation.id}&pub=${publisher.uid}`;
+        let url: string = `https://assemblee-bronx.web.app/invite?cong=${congregation.id}&pub=${publisher.uid}`;
         if (publisher.email) {
             auth.sendSignInLinkToEmail(publisher.email, {
                 url: url,
@@ -176,11 +189,13 @@ export default function PublisherDetail() {
                                     text='Cancel' onClick={() => setEditing(false)} />
                                     <DefaultButton
                                     onClick={() => {
-                                        firestore.doc(`congregations/${CONG_ID}/publishers/${publisher.uid}`).update({
+                                        firestore.doc(`congregations/${CONG_ID}/publishers/${publisher.uid}`)
+                                        .update({
                                             firstName: pub && pub.firstName ? pub?.firstName : publisher.firstName,
                                             lastName: pub && pub.lastName ? pub?.lastName : publisher.lastName,
                                             email: pub && pub.email ? pub?.email : publisher.email,
-                                            groupId: pub && pub.groupId ? pub.groupId : publisher.groupId
+                                            groupId: pub && pub.groupId ? pub.groupId : null,
+                                            classe: pub && pub.classe ? pub.classe : publisher.classe
                                         }).then(() => setEditing(false))
                                     }}
                                      iconProps={{ iconName: 'Save' }} text='Save' />
@@ -192,7 +207,7 @@ export default function PublisherDetail() {
                             }
 
                         </div>
-                        <div className="mt-4">
+                        <div className="mt-4 grid grid-cols-2">
                             <ChoiceGroup
                                 onChange={(e, option) => {
                                     firestore.doc(`congregations/${CONG_ID}/publishers/${publisher.uid}`).update({ privilege: option?.key })
@@ -212,6 +227,20 @@ export default function PublisherDetail() {
                                         text: 'Elder',
                                         disabled: publisher.gender === Gender.sister
                                     },
+                                ]} />
+                            <ChoiceGroup
+                                onChange={(e, option) => {
+                                    firestore.doc(`congregations/${CONG_ID}/publishers/${publisher.uid}`).update({ classe: option?.key })
+                                }}
+                                label="Classe" defaultSelectedKey={publisher.classe} options={[
+                                    {
+                                        key: Classe.primary,
+                                        text: 'Principale',
+                                    },
+                                    {
+                                        key: Classe.secondary,
+                                        text: 'Secondaire'
+                                    }
                                 ]} />
                         </div>
                         {

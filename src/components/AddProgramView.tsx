@@ -12,7 +12,7 @@ import { Congregation } from '../models/congregation';
 
 export default function AddProgramView() {
     const programService = new ProgramsService();
-    const { dismissModal, firestore } = useContext(GlobalContext)
+    const { dismissModal, firestore, functions } = useContext(GlobalContext)
     const [ value ] = useDocumentOnce(firestore.doc(`congregations/${CONG_ID}`));
     const [isLoading, setLoading] = React.useState(false)
     const today = useConst(new Date());
@@ -65,12 +65,13 @@ export default function AddProgramView() {
                             setLoading(true)
                             let congegation: Congregation = {
                                 ...value.data()
-                            }
+                            } 
+                            console.warn(selectedDate[0].toISOString())
                             let promise = programService.addProgram(selectedDate[0], congegation, firestore)
                             promise.then(_ => {
                                 setLoading(false)
                                 dismissModal()
-                            })
+                            }) 
                         }
                     }}
                     className="w-full" 

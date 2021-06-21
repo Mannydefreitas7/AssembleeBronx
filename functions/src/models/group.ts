@@ -1,4 +1,4 @@
-import { Address } from "./address";
+
 import { Publisher } from "./publisher";
 
 export interface Group {
@@ -9,9 +9,4 @@ export interface Group {
     overseer?: Publisher;
     description?: string;
     assistant?: Publisher;
-}
-
-export enum Classe {
-    primary = "primary",
-    secondary = "secondary"
 }

@@ -6,7 +6,7 @@ import * as EmailValidator from 'email-validator';
 import { v4 } from 'uuid'
 import { CONG_ID } from '../constants';
 import { useCollectionOnce } from 'react-firebase-hooks/firestore';
-import { Group } from '../models/group';
+import { Classe, Group } from '../models/group';
 
 export default function AddPublisherView() {
     const { dismissModal, firestore } = useContext(GlobalContext);
@@ -64,6 +64,7 @@ export default function AddPublisherView() {
                     isWTConductor: false,
                     speaker: null!,
                     isReader: false,
+                    classe: Classe.primary,
                     uid: v4()
                 }
                 firestore

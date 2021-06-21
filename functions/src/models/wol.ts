@@ -88,7 +88,7 @@ export enum PartType {
 }
 
 export enum ClassType {
-   primary = "primary", 
+   primary = "primary",
    secondary = "secondary"
 }
 
@@ -100,10 +100,11 @@ export enum Parent {
    wt = 'watchtower',
    chairman = 'chairman',
    prayer = 'prayer',
-   secondary = 'secondary',
+   secondary = 'secondary'
 }
+
 
 export interface AddProgramData {
    date: string;
-   congregation: Congregation;
+   congregation: Congregation
 }

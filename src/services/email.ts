@@ -22,7 +22,7 @@ export class EmailService {
     const exportService = new ExportService();
     const send = functions.httpsCallable('emailData');
     // eslint-disable-next-line
-    const btn = `<a style="padding: 5px 10px; color: #ffffff; background-color: #198754; text-decoration: none; border-radius: 5px;" href="https://assemblee.web.app/confirm?cong=${congregation.id}&week=${part.week}&part=${part.id}">Confirm</a>`;
+    const btn = `<a style="padding: 5px 10px; color: #ffffff; background-color: #198754; text-decoration: none; border-radius: 5px;" href="https://assemblee-bronx.web.app/confirm?cong=${congregation.id}&week=${part.week}&part=${part.id}">Confirmer</a>`;
 
     return new Promise(async (resolve, reject) => {
       if (part.assignee) {
@@ -44,8 +44,8 @@ export class EmailService {
                 cc: sending,
                 subject: exportService.partDefinition.info?.title,
                 to: email,
-                html: `<p>Hello ${part.assignee.lastName} ${part.assignee.firstName
-                },</p><p>Please find attached your meeting assignment for <strong>${moment(part.date.toDate()).format('MMMM DD yyyy')}</strong>.</p><p>Please confirm if date works for you.</p><p>Sincerely,<br>${congregation?.properties?.orgName ?? ""}</p>`,
+                html: `<p>Bonjour ${part.assignee.lastName} ${part.assignee.firstName
+                },</p><p>Nous avons le plaisir de te transmettre le devoir pour <strong>${moment(part.date.toDate()).locale('fr').format('MMMM DD yyyy')}</strong>.</p><p>Veuille confirmer l'acceptation du devoir en cliquant sur le lien ci-dessous ou en <strong>répondant a cet email</strong>.</p><br /><p>${btn}</p><br /><p>Cordialement,<br>${congregation?.properties?.orgName ?? ""}</p>`,
                 attachments: [
                   {
                     content: data,

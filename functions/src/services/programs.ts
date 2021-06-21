@@ -1,10 +1,10 @@
-import moment from "moment";
+import * as moment from "moment";
 import { Congregation } from "../models/congregation";
-import { AddProgramData, Part, WeekProgram, WOLWeek } from "../models/wol";
+import { Part, WeekProgram, WOLWeek } from "../models/wol";
 import { WOLApi } from "./wol";
 import firebase from 'firebase/app'
-
-
+import { Response } from 'node-fetch';
+import * as functions from "firebase-functions";
 export class ProgramsService {
 
     wolApiService = new WOLApi()
@@ -84,8 +84,9 @@ export class ProgramsService {
                                         promises.push(fireStore.doc(`${path}/weeks/${week.id}/parts/${part.id}`).set(part)
                                     );
                                 })
+                                return
                             
-                            })
+                            }).catch(error => console.log(error))
 
                         } else if (wolWeek.items.length > 1) {     
                             let weekEndPart : Part[] = this.wolApiService.parseWeekEnd(wolWeek, monday, path, week.id!)
@@ -93,7 +94,9 @@ export class ProgramsService {
                                 weekEndPart.forEach(part => {
                                     promises.push(fireStore.doc(`${path}/weeks/${week.id}/parts/${part.id}`).set(part));
                                 })
-                            }) 
+                                return
+                            })
+                            .catch(console.info)
                         } 
                     }
                 }
@@ -107,25 +110,27 @@ export class ProgramsService {
     async addProgram(date: Date, congregation: Congregation, fireStore: firebase.firestore.Firestore) : Promise<any> {
         let promises: Promise<any>[] = [];
         let path : string = `congregations/${congregation.id}`;
+        let _date = new Date(date);
         try {
+            functions.logger.log("DATE IS:", _date)
+            functions.logger.log("DATE IS:", _date.getMonth())
             let response: Response = await this.wolApiService.getWeekProgram(
-                moment(date).year(),
-                moment(date).month() + 1,
-                date.getDate(),
+                moment(_date).year(),
+                _date.getMonth() + 1,
+                _date.getDate(),
                 congregation.fireLanguage?.apiURL!
             )
             if (response.status === 200) {
                 let wolWeek: WOLWeek = await response.json();
-                console.log(wolWeek)
                 if (wolWeek.items.length > 0) {
 
-                    let start = moment(date).locale('fr');
+                    let start = moment(_date).locale('fr');
                     let range = `${moment(start).format("D MMM")} - ${start.add(6, 'day').format('D MMM')}`
-                    let week: WeekProgram = this.wolApiService.weekSchedule(wolWeek, date, path, wolWeek.items.length > 1 ? wolWeek.items[1].title : range)
+                    let week: WeekProgram = this.wolApiService.weekSchedule(wolWeek, _date, path, wolWeek.items.length > 1 ? wolWeek.items[1].title : range)
                     let weekPromise = fireStore.collection(`${path}/weeks`).doc(`${week.id}`).set(week);
                     promises = [weekPromise]
-                    let prayers : Part[] = this.wolApiService.addPrayers(date, path, week.id!)
-                    let chairmans : Part[] = this.wolApiService.addChairmans(date, path, week.id!)
+                    let prayers : Part[] = this.wolApiService.addPrayers(_date, path, week.id!)
+                    let chairmans : Part[] = this.wolApiService.addChairmans(_date, path, week.id!)
 
                         prayers.forEach(prayer => {
                             promises.push(
@@ -142,8 +147,8 @@ export class ProgramsService {
                             );
                         })
                         if (week.id && wolWeek.items.length > 2) {
-                            let midWeekPart : Part[] = this.wolApiService.parseMidWeek(wolWeek, date, path, week.id);
-                            let weekEndPart : Part[] = this.wolApiService.parseWeekEnd(wolWeek, date, path, week.id);
+                            let midWeekPart : Part[] = this.wolApiService.parseMidWeek(wolWeek, _date, path, week.id);
+                            let weekEndPart : Part[] = this.wolApiService.parseWeekEnd(wolWeek, _date, path, week.id);
                             weekEndPart.forEach(part => {
                                 promises.push(
                                 fireStore
@@ -160,14 +165,14 @@ export class ProgramsService {
                             return promise
                         } else {
                             if (week.id && wolWeek.items[1].classification === 106) {
-                                let midWeekPart : Part[] = this.wolApiService.parseMidWeek(wolWeek, date, path, week.id);
+                                let midWeekPart : Part[] = this.wolApiService.parseMidWeek(wolWeek, _date, path, week.id);
                                 midWeekPart.forEach(part => {
                                         promises.push(fireStore.doc(`${path}/weeks/${week.id}/parts/${part.id}`).set(part)
                                     );
                                 });
                             }
                             if (week.id && wolWeek.items[1].classification === 68) {
-                                let weekEndPart : Part[] = this.wolApiService.parseWeekEnd(wolWeek, date, path, week.id);
+                                let weekEndPart : Part[] = this.wolApiService.parseWeekEnd(wolWeek, _date, path, week.id);
                                 weekEndPart.forEach(part => {
                                     promises.push(
                                     fireStore
@@ -182,15 +187,7 @@ export class ProgramsService {
                     }
                 }
         } catch (error) {console.log(error)}
+        return promises
     }
     
-    async addCallableProgram(date: string, congregation: Congregation, functions: firebase.functions.Functions): Promise<firebase.functions.HttpsCallableResult> {
-        const send = functions.httpsCallable('addProgram');
-        let _data: AddProgramData = {
-            date: date,
-            congregation: congregation
-        }
-        const result = await send(_data);
-        return result;
-    }
 }
