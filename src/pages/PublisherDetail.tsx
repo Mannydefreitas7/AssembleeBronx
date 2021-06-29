@@ -38,23 +38,6 @@ export default function PublisherDetail() {
     })
     const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
     
-    const classOptions: IDropdownOption[] = [
-        {
-            text: 'Principale',
-            key: Classe.primary,
-            data: Classe.primary
-        },
-        {
-            text: 'Secondaire',
-            key: Classe.secondary,
-            data: Classe.secondary
-        },{
-            text: 'Secondaire',
-            key: Classe.secondary,
-            data: Classe.secondary
-        }
-    ]
-
     const invite = () => {
         let url: string = `https://assemblee-bronx.web.app/invite?cong=${congregation.id}&pub=${publisher.uid}`;
         if (publisher.email) {

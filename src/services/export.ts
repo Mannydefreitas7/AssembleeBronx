@@ -10,7 +10,7 @@ import {
 } from 'pdfmake/interfaces';
 import moment from 'moment';
 import firebase from 'firebase/app';
-import { Classe } from '../models/group';
+
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export class ExportService {
@@ -395,26 +395,26 @@ export class ExportService {
 
           }),
         },
-        {
-          markerColor: '#808080',
-          ul: [
-            {
-              columns: [
-                {
-                  text: 'Classe Secondaire',
-                  style: 'partSecondary',
-                },
-                {
-                  text:
-                  filteredParts.bibleSecondary && filteredParts.bibleSecondary.assignee
-                      ? `${filteredParts.bibleSecondary.assignee.firstName} ${filteredParts.bibleSecondary.assignee.lastName}`
-                      : '',
-                  style: 'partValueSecondary',
-                },
-              ],
-            }
-          ]
-        },
+        // {
+        //   markerColor: '#808080',
+        //   ul: [
+        //     {
+        //       columns: [
+        //         {
+        //           text: 'Classe Secondaire',
+        //           style: 'partSecondary',
+        //         },
+        //         // {
+        //         //   text:
+        //         //   filteredParts.bibleSecondary && filteredParts.bibleSecondary.assignee
+        //         //       ? `${filteredParts.bibleSecondary.assignee.firstName} ${filteredParts.bibleSecondary.assignee.lastName}`
+        //         //       : '',
+        //         //   style: 'partValueSecondary',
+        //         // },
+        //       ],
+        //     }
+        //   ]
+        // },
         {
           text: 'APPLIQUE-TOI AU MINISTÈRE',
           style: 'apply',
@@ -434,10 +434,10 @@ export class ExportService {
                     text: part && part.assistant ? `Interlocuteur` : '',
                     style: 'part',
                   },
-                  {
-                    text: 'Classe Secondaire',
-                    style: 'partSecondary',
-                  },
+                  // {
+                  //   text: 'Classe Secondaire',
+                  //   style: 'partSecondary',
+                  // },
                 ],
                 [
                   {
@@ -454,15 +454,15 @@ export class ExportService {
                         : '',
                     style: 'partValue',
                   },
-                  {
-                    text:
-                      filteredParts.applySecondary.length > 0 && filteredParts.applySecondary[index] && filteredParts.applySecondary[index].assignee
-                        ? `${filteredParts.applySecondary[index].assignee?.firstName} ${filteredParts.applySecondary[index].assignee?.lastName} / ${filteredParts.applySecondary.length > 0 && filteredParts.applySecondary[index] && filteredParts.applySecondary[index].assistant
-                          ? `${filteredParts.applySecondary[index].assistant?.firstName} ${filteredParts.applySecondary[index].assistant?.lastName}`
-                          : ''}`
-                        : '',
-                    style: 'partValueSecondary',
-                  },
+                  // {
+                  //   text:
+                  //     filteredParts.applySecondary.length > 0 && filteredParts.applySecondary[index] && filteredParts.applySecondary[index].assignee
+                  //       ? `${filteredParts.applySecondary[index].assignee?.firstName} ${filteredParts.applySecondary[index].assignee?.lastName} / ${filteredParts.applySecondary.length > 0 && filteredParts.applySecondary[index] && filteredParts.applySecondary[index].assistant
+                  //         ? `${filteredParts.applySecondary[index].assistant?.firstName} ${filteredParts.applySecondary[index].assistant?.lastName}`
+                  //         : ''}`
+                  //       : '',
+                  //   style: 'partValueSecondary',
+                  // },
                 ],
               ],
               margin: [0, 10, 0, 0],
@@ -529,61 +529,136 @@ export class ExportService {
           margin: [0, 10, 0, 1],
         },
         {
-          columns: [
-            [
-              {
-                text: 'Président',
-                style: 'label',
-              },
-              {
-                text: `${
-                  filteredParts?.chairmans[1]?.assignee?.firstName ?? ''
-                } ${filteredParts?.chairmans[1]?.assignee?.lastName ?? ''}`,
-                style: 'value',
-              },
-            ],
-          ],
-          margin: [0, 10, 0, 1],
-        },
-        {
-          text: `Frère ${filteredParts.talk[0]?.assignee?.firstName ?? ""} ${filteredParts?.talk[0]?.assignee?.lastName ?? ""} - ${filteredParts?.talk[0]?.assignee?.speaker?.congregation?.properties?.orgName ?? ""}`,
-          style: 'label',
-          margin: [0, 10, 0, 0],
-        },
-        {
-          text: filteredParts.talk[0]?.title ?? '',
-          style: 'value',
-        },
-        {
-          text: 'Etude de la Tour de Garde',
+          text: 'Classe Secondaire',
           style: 'weekend',
-          margin: [0, 10, 0, 0],
+          margin: [0, 15, 0, 0],
         },
         {
-          columns: [
-            [
-              {
-                text: 'Conducteur',
-                style: 'label',
-              },
-              {
-                text: `${filteredParts?.wt[0]?.assignee?.firstName ?? ''} ${filteredParts?.wt[0]?.assignee?.lastName ?? ''}`,
-                style: 'value',
-              },
-            ],
-            [
-              {
-                text: 'Lecteur',
-                style: 'label',
-              },
-              {
-                text: `${filteredParts?.wt[0]?.assistant?.firstName ?? ""} ${filteredParts?.wt[0]?.assistant?.lastName ?? ''}`,
-                style: 'value',
-              },
-            ],
-          ],
-          margin: [0, 5, 0, 0],
-        }
+          text: 'JOYAUX DE LA PAROLE DE DIEU',
+          style: 'treasures',
+          margin: [0, 15, 0, 0],
+        },
+        {
+          markerColor: '#808080',
+          ul: [
+            {
+              columns: [
+                [
+                  {
+                    text: `${filteredParts.bibleSecondary && filteredParts.bibleSecondary?.title?.split(')')[0]})`,
+                    style: 'part',
+                  }, 
+                  {
+                    text:
+                    filteredParts.bibleSecondary && filteredParts.bibleSecondary.assignee
+                        ? `${filteredParts.bibleSecondary.assignee.firstName} ${filteredParts.bibleSecondary.assignee.lastName}`
+                        : '',
+                    style: 'partValue',
+                  },
+  
+                ]
+              ],
+              margin: [0, 10, 0, 0],
+            }
+          ]
+        },
+        {
+          text: 'APPLIQUE-TOI AU MINISTÈRE',
+          style: 'apply',
+          margin: [0, 15, 0, 0],
+        },
+        {
+          markerColor: '#808080',
+          ul: filteredParts.applySecondary.map((part, index) => {
+            return {
+              columns: [
+                [
+                  {
+                    text: `${part?.title?.split(')')[0]})`,
+                    style: 'part',
+                  },
+                  {
+                    text: part && part.assistant ? `Interlocuteur` : '',
+                    style: 'part',
+                  },
+                ],
+                [
+                  {
+                    text:
+                      part && part.assignee
+                        ? `${part.assignee.firstName} ${part.assignee.lastName}`
+                        : '',
+                    style: 'partValue',
+                  },
+                  {
+                    text:
+                      part && part.assistant
+                        ? `${part.assistant.firstName} ${part.assistant.lastName}`
+                        : '',
+                    style: 'partValue',
+                  },
+                ],
+              ],
+              margin: [0, 10, 0, 0],
+            };
+          }),
+        },
+        // {
+        //   columns: [
+        //     [
+        //       {
+        //         text: 'Président',
+        //         style: 'label',
+        //       },
+        //       {
+        //         text: `${
+        //           filteredParts?.chairmans[1]?.assignee?.firstName ?? ''
+        //         } ${filteredParts?.chairmans[1]?.assignee?.lastName ?? ''}`,
+        //         style: 'value',
+        //       },
+        //     ],
+        //   ],
+        //   margin: [0, 10, 0, 1],
+        // },
+        // {
+        //   text: `Frère ${filteredParts.talk[0]?.assignee?.firstName ?? ""} ${filteredParts?.talk[0]?.assignee?.lastName ?? ""} - ${filteredParts?.talk[0]?.assignee?.speaker?.congregation?.properties?.orgName ?? ""}`,
+        //   style: 'label',
+        //   margin: [0, 10, 0, 0],
+        // },
+        // {
+        //   text: filteredParts.talk[0]?.title ?? '',
+        //   style: 'value',
+        // },
+        // {
+        //   text: 'Etude de la Tour de Garde',
+        //   style: 'weekend',
+        //   margin: [0, 10, 0, 0],
+        // },
+        // {
+        //   columns: [
+        //     [
+        //       {
+        //         text: 'Conducteur',
+        //         style: 'label',
+        //       },
+        //       {
+        //         text: `${filteredParts?.wt[0]?.assignee?.firstName ?? ''} ${filteredParts?.wt[0]?.assignee?.lastName ?? ''}`,
+        //         style: 'value',
+        //       },
+        //     ],
+        //     [
+        //       {
+        //         text: 'Lecteur',
+        //         style: 'label',
+        //       },
+        //       {
+        //         text: `${filteredParts?.wt[0]?.assistant?.firstName ?? ""} ${filteredParts?.wt[0]?.assistant?.lastName ?? ''}`,
+        //         style: 'value',
+        //       },
+        //     ],
+        //   ],
+        //   margin: [0, 5, 0, 0],
+        // }
       ];
       return content
   }
@@ -628,7 +703,7 @@ async downloadPDF(
 
               pdfMake
               .createPdf(docDefinition)
-              .download(`Meeting Schedule - ${weeks.length > 1 ? 
+              .download(`Programme Vie et Ministere - ${weeks.length > 1 ? 
               moment(weeks[0].date.toDate())
               .format('MMMM yyyy') : 
               weeks[0].range}.pdf`)

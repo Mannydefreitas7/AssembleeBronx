@@ -1,6 +1,6 @@
 import { Stack } from '@fluentui/react'
 import React, { useContext } from 'react'
-import { Part, PartType, WeekProgram } from './../models/wol';
+import { Parent, Part, PartType, WeekProgram } from './../models/wol';
 import { apply, chairmans, life, prayers, treasures, bibleReadingSecondary, applySecondary} from '../shared/methods';
 import PartAssigneeButton from './PartAssigneeButton';
 import { GlobalContext } from '../store/GlobalState';
@@ -15,7 +15,12 @@ export default function MidWeekView({ parts, week }: { parts: Part[], week: Week
         <div>
             <Stack>
                 <div className={`${isMobile ? 'p-4' : 'p-10'} rounded bg-white shadow my-4`}>
-                    <h3 className="mt-0 text-xl font-semibold">Réunion de Semaine</h3>
+                  
+                    <h3 className="mt-0 text-xl font-semibold">
+                        Réunion de Semaine
+                    </h3>
+
+
                     <div className="mt-3 flex pl-4 flex-wrap justify-between items-center">
                         <label className="text-gray-400">Président</label>
                         <div className="inline-flex items-center my-2">
@@ -38,7 +43,9 @@ export default function MidWeekView({ parts, week }: { parts: Part[], week: Week
                                 <PartContextMenu part={chairmans(parts)[0]} /> : null
                             }
                         </div>
+                    
                     </div>
+                    
                     <div className="mt-3 flex pl-4 flex-wrap justify-between items-center">
                         <label className="text-gray-400">Priere</label>
                         <div className="inline-flex items-center my-2">
@@ -92,28 +99,6 @@ export default function MidWeekView({ parts, week }: { parts: Part[], week: Week
                             )
                         })
                     }
-                    <div className="mb-3 pl-8 flex flex-wrap justify-between items-center">
-                            <label className={isMobile ? 'text-xs font-bold' : 'font-bold'}>Classe Secondaire:</label>
-                            <div className="inline-flex items-center my-2">
-                            {
-                                parts && bibleReadingSecondary(parts).assignee  ?
-                                    <PartRemoveButton
-                                        action={() => {
-                                            selectPublisher(week, bibleReadingSecondary(parts), PartType.assignee, bibleReadingSecondary(parts).assignee)
-                                            openPanel()
-                                        }}
-                                        part={bibleReadingSecondary(parts)}
-                                        publisher={bibleReadingSecondary(parts).assignee ?? {}} /> :
-                                    <PartAssigneeButton text="Assignee" action={() => {
-                                        selectPublisher(week, bibleReadingSecondary(parts), PartType.assignee, null)
-                                        openPanel()
-                                    }} />
-                            }
-                            {
-                                bibleReadingSecondary(parts) ? <PartContextMenu part={bibleReadingSecondary(parts)} /> : null
-                            }
-                            </div>
-                    </div>
 
                     <h4 className="my-3 font-semibold text-lg apply">APPLIQUE-TOI AU MINISTÈRE</h4>
                     {
@@ -154,43 +139,6 @@ export default function MidWeekView({ parts, week }: { parts: Part[], week: Week
                                             }
                                             {
                                                 part ? <PartContextMenu part={part} /> : null
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className="mb-3 pl-8 flex flex-wrap justify-between items-center">
-                                        <label className={isMobile ? 'text-xs font-bold' : 'font-bold'}>Classe Secondaire:</label>
-                                        <div className="inline-flex flex-wrap items-center my-2">
-                                            {
-                                                parts.length > 0 && applySecondary(parts)[index] && applySecondary(parts)[index].assignee ?
-                                                    <PartRemoveButton
-                                                        action={() => {
-                                                            selectPublisher(week, applySecondary(parts)[index], PartType.assignee, applySecondary(parts)[index].assignee)
-                                                            openPanel()
-                                                        }}
-                                                        part={applySecondary(parts)[index]}
-                                                        publisher={applySecondary(parts)[index].assignee ?? {}} /> :
-                                                    <PartAssigneeButton text="Assignee" action={() => {
-                                                        selectPublisher(week, applySecondary(parts)[index], PartType.assignee, null)
-                                                        openPanel()
-                                                    }} />
-                                            }
-                                            <span className="text-gray-200 mx-1">-</span>
-                                            {
-                                                parts.length > 0 && applySecondary(parts)[index] && applySecondary(parts)[index].assistant ?
-                                                    <PartRemoveButton
-                                                        action={() => {
-                                                            selectPublisher(week, applySecondary(parts)[index], PartType.assistant, applySecondary(parts)[index].assistant)
-                                                            openPanel()
-                                                        }}
-                                                        part={applySecondary(parts)[index]}
-                                                        publisher={applySecondary(parts)[index].assistant ?? {}} /> :
-                                                    <PartAssigneeButton text="Assistant" action={() => {
-                                                        selectPublisher(week, applySecondary(parts)[index], PartType.assistant, null)
-                                                        openPanel()
-                                                    }} />
-                                            }
-                                            {
-                                                applySecondary(parts)[index] ? <PartContextMenu part={applySecondary(parts)[index]} /> : null
                                             }
                                         </div>
                                     </div>

@@ -13,6 +13,7 @@ import { Permission, Publisher } from '../models/publisher'
 import { useHistory } from "react-router-dom";
 import * as EmailValidator from 'email-validator';
 import { useAlert } from 'react-alert';
+import { useEffect } from 'react';
 
 export default function Invite() {
 
@@ -29,6 +30,11 @@ export default function Invite() {
     const oldPublisher : Publisher = {
         ...oldPublisherDoc?.data()
     }
+
+    useEffect(() => {
+        auth.signInAnonymously();
+    }, [])
+
     const [email, setEmail] = useState<string>(oldPublisher?.email ?? "");
     const createUser = async (credential: firebase.auth.UserCredential) : Promise<any> => {
         try {

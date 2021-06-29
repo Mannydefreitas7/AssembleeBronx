@@ -12,7 +12,7 @@ import { Congregation } from '../models/congregation';
 
 export default function AddProgramView() {
     const programService = new ProgramsService();
-    const { dismissModal, firestore, functions } = useContext(GlobalContext)
+    const { dismissModal, firestore } = useContext(GlobalContext)
     const [ value ] = useDocumentOnce(firestore.doc(`congregations/${CONG_ID}`));
     const [isLoading, setLoading] = React.useState(false)
     const today = useConst(new Date());

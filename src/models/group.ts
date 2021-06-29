@@ -1,4 +1,4 @@
-import { Address } from "./address";
+
 import { Publisher } from "./publisher";
 
 export interface Group {

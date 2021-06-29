@@ -21,9 +21,10 @@ import {
     OPEN_SPEAKER_MODAL,
     OPEN_GROUP_MODAL,
     EDIT_GROUP_MODAL,
-    LOAD_TALKS
+    LOAD_TALKS,
+    ADD_PART_MODAL
 } from './ActionTypes';
-import { Part, PartType, WeekProgram } from '../models/wol';
+import { Parent, Part, PartType, WeekProgram } from '../models/wol';
 import { config, CONG_ID } from '../constants';
 import { IDropdownOption } from '@fluentui/react';
 import { useBoolean } from '@fluentui/react-hooks';
@@ -31,12 +32,13 @@ import { Permission, Publisher, Talk } from '../models/publisher';
 import { Congregation, FireLanguage } from '../models/congregation';
 import AddProgramView from '../components/AddProgramView';
 import ExportOptionsView from '../components/ExportOptionsView';
-import RenamePartView from '../components/RenamePartView';
+import EditPartView from '../components/EditPartView';
 import AddPublisherView from '../components/AddPublisherView';
 import AddSpeakerView from '../components/AddSpeakerView';
 import { useMediaQuery } from 'react-responsive';
 import AddGroupView from '../components/AddGroupView';
 import EditGroupView from '../components/EditGroupView';
+import AddPartView from '../components/AddPartView';
 import { User } from '../models/user';
 
 
@@ -145,7 +147,8 @@ const initialState: InitialState = {
     openGroupModal: null,
     talks: [],
     openEditGroupModal: null,
-    loadTalks: null
+    loadTalks: null,
+    addPartModal: null
 }
 
 export const GlobalContext = createContext(initialState)
@@ -285,6 +288,14 @@ export const GlobalProvider = (props: GlobalProps) => {
         })
         openModal()
     }
+
+    const addPartModal = (week: WeekProgram, parent: Parent) => {
+        dispatch({
+            type: ADD_PART_MODAL,
+            payload: <AddPartView week={week} />
+        })
+        openModal()
+    }
     const openSpeakerModal = () => {
         dispatch({
             type: OPEN_SPEAKER_MODAL,
@@ -321,7 +332,7 @@ export const GlobalProvider = (props: GlobalProps) => {
     const openRenameModal = (part : Part) => {
         dispatch({
             type: OPEN_RENAME_MODAL,
-            payload: <RenamePartView part={part} />
+            payload: <EditPartView part={part} />
         })
         openModal()
     }
@@ -430,7 +441,8 @@ export const GlobalProvider = (props: GlobalProps) => {
             openSpeakerModal,
             openEditGroupModal,
             talks: state.talks,
-            loadTalks
+            loadTalks,
+            addPartModal
         }}>
             {props.children}
         </GlobalContext.Provider>

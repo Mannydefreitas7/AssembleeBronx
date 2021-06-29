@@ -5,7 +5,8 @@ import { useHistory, useParams } from 'react-router';
 import { CONG_ID } from '../constants';
 import { Part, WeekProgram } from '../models/wol';
 import { GlobalContext } from '../store/GlobalState';
-import WeekEndView from '../components/WeekEndView';
+// import WeekEndView from '../components/WeekEndView';
+import SecondaryClassView from '../components/SecondaryClassView';
 import MidWeekView from '../components/MidWeekView';
 import SelectPublisherPanel from '../components/SelectPublisherPanel';
 import { ExportService } from '../services/export';
@@ -14,7 +15,7 @@ import { SharedColors } from '@fluentui/theme'
 import { useAlert } from 'react-alert';
 
 export default function ProgramDetail() {
-    const { firestore, congregation, reloadWeeks, isMobile } = useContext(GlobalContext)
+    const { firestore, congregation, reloadWeeks, isMobile, addPartModal } = useContext(GlobalContext)
     const { id } = useParams<{ id: string }>();
     const [documentSnapshot, weekLoading] = useDocument(firestore.doc(`congregations/${CONG_ID}/weeks/${id}`))
     const [collection, loading] = useCollection(firestore.collection(`congregations/${CONG_ID}/weeks/${id}/parts`).orderBy('index'));
@@ -71,6 +72,9 @@ export default function ProgramDetail() {
                             offText="No" 
                             onChange={_onChange} />
                     }
+                     <ActionButton
+                            onClick={() => addPartModal(document)}
+                            iconProps={{ iconName: 'Add' }}>Add Part</ActionButton>
                     {
                         isDownloading ?
                         <Spinner label="Downloading..." labelPosition={'right'} /> :
@@ -99,20 +103,26 @@ export default function ProgramDetail() {
                             onClick={toggleHideDialog}
                             iconProps={{ iconName: 'Delete', className: 'text-red-500 hover:text-red-900' }} allowDisabledFocus>Delete</ActionButton>
                     }
+                   
+
 
                 </div>
             </div>
             {
                 loading ? <Spinner className="pt-10" size={SpinnerSize.large} /> :
                     <div>
+    
                         <Pivot>
-                            <PivotItem headerText="Midweek">
+                            <PivotItem headerText="Principale">
                                 <MidWeekView week={document} parts={collection?.docs.map<Part>(d => d.data()) ?? []} />
                             </PivotItem>
-                            <PivotItem headerText="Weekend">
-                                <WeekEndView week={document} parts={collection?.docs.map<Part>(d => d.data()) ?? []} />
+                            <PivotItem headerText="Secondaire">
+                                <SecondaryClassView week={document} parts={collection?.docs.map<Part>(d => d.data()) ?? []} />
+                                {/* <WeekEndView week={document} parts={collection?.docs.map<Part>(d => d.data()) ?? []} /> */}
                             </PivotItem>
+                            
                         </Pivot>
+
                       <SelectPublisherPanel />
                     </div>
             }

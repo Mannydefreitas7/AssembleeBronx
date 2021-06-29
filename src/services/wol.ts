@@ -63,7 +63,7 @@ export class WOLApi {
           week: weekID,
         });
 
-        if (i === 2) {
+        if (i >= 2) {
           parts.push({
             hasDiscussion: false,
             hasAssistant: false,
@@ -138,7 +138,7 @@ export class WOLApi {
           subTitle: '',
           title: element?.textContent ?? '',
         
-          index: i,
+          index: i + 1,
           isCalendarAdded: false,
           isConfirmed: false,
           parent: Parent.secondary,
@@ -172,7 +172,7 @@ export class WOLApi {
                 .toDate()
                 .getTime()
             : 10,
-          privilege: [Privilege.elder, Privilege.ms],
+          privilege: [Privilege.elder, Privilege.ms, Privilege.pub],
           subTitle: '',
           title: element?.textContent ?? '',
           index: i,
@@ -256,7 +256,7 @@ export class WOLApi {
         path: path,
         isCalendarAdded: false,
         lengthTime: moment('01:00:00', 'hh:mm:ss').toDate().getTime(),
-        privilege: [Privilege.elder],
+        privilege: [Privilege.elder, Privilege.ms, Privilege.pub],
         index: 1,
         isEmailed: false,
         date: date,

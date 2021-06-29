@@ -7,10 +7,18 @@ import { apply, chairmans, life, prayers, talk, treasures, wt, applySecondary, b
 import { GlobalContext } from '../store/GlobalState';
 import { DefaultButton, Text } from '@fluentui/react';
 import { ExportService } from '../services/export';
+import { useEffect } from 'react';
 
 
 export default function MeetingView() {
   const { weeks, week, parts, changeWeek } = useContext(GlobalContext);
+
+  // useEffect(() => {
+  //     changeWeek({
+  //       key: week.id,
+  //       text: week.range
+  //     })
+  // }, [])
 
   return (
     <div className="">
@@ -91,10 +99,6 @@ const WeekSchedule = () => {
               )
             })
           }
-          <div className="mt-3 px-6 flex flex-wrap justify-between items-center">
-              <label className={'font-bold ml-4 w-2/3 text-green-700'}>Classe Secondaire:</label>
-              <PartInfo part={bibleReadingSecondary(parts)} />
-          </div>
           <h4 className="my-3 font-semibold text-lg apply">APPLIQUE-TOI AU MINISTÈRE</h4>
           {
             parts && apply(parts).map((part, index) => {
@@ -105,10 +109,6 @@ const WeekSchedule = () => {
                       {part.title}
                     </label>
                     <PartInfo part={part} />
-                  </div>
-                  <div className="mt-3 px-6 flex flex-wrap justify-between items-center">
-                      <label className={'font-bold ml-4 w-2/3 text-green-700'}>Classe Secondaire:</label>
-                      <PartInfo part={applySecondary(parts)[index]} />
                   </div>
                 </div>
               )
@@ -133,7 +133,32 @@ const WeekSchedule = () => {
             <PartInfo part={prayers(parts)[1]} />
           </div>
         </div>
+
         <div className="p-10 rounded bg-white shadow mt-4">
+          <h3 className="mt-0 text-xl font-semibold">Classe Secondaire</h3>
+          <h4 className="my-3 font-semibold text-lg treasures">JOYAUX DE LA PAROLE DE DIEU</h4>
+          <div className="mt-3 ps-4 d-flex flex flex-wrap justify-between items-center">
+            <label className="">{bibleReadingSecondary(parts).title}</label>
+            <PartInfo part={bibleReadingSecondary(parts)} />
+          </div>
+          <h4 className="my-3 font-semibold text-lg apply">APPLIQUE-TOI AU MINISTÈRE</h4>
+            {
+              parts && applySecondary(parts).map((part, index) => {
+                return (
+                  <div key={part.id}>
+                    <div className="mt-3 pl-4 flex flex-wrap justify-between items-center">
+                      <label className="w-2/3">
+                        {part.title}
+                      </label>
+                      <PartInfo part={part} />
+                    </div>
+                  </div>
+                )
+              })
+            }
+        </div>
+
+        {/* <div className="p-10 rounded bg-white shadow mt-4">
           <h3 className="mt-0 text-xl font-semibold">Réunion Publique</h3>
           <div className="mt-3 ps-4 flex justify-between items-center">
             <label className="text-gray-400">Président</label>
@@ -153,7 +178,10 @@ const WeekSchedule = () => {
             <label className="col-sm-12 col-md-6 col-lg-6 text-gray-400">Priere</label>
             <PartInfo part={talk(parts)[0]} />
           </div>
-        </div>
+        </div> */}
+
+        
+        
       </Stack>
     </>
   )

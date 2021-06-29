@@ -6,13 +6,34 @@ import { GlobalContext } from '../store/GlobalState';
 import { Icon } from '@fluentui/react/lib/Icon';
 import { Link, useRouteMatch } from 'react-router-dom';
 import PublisherTile from '../components/PublisherTile';
-import { Publisher } from '../models/publisher';
+import { Gender, Privilege, Publisher } from '../models/publisher';
+import publishersJson from './../assets/hourglass.json';
+import { v4 } from 'uuid';
+import { Classe } from '../models/group';
 
 export default function Publishers() {
     const { firestore, openPublisherModal } = useContext(GlobalContext)
     const [ value, loading ] = useCollection(firestore.collection(`congregations/${CONG_ID}/publishers`).orderBy('lastName'))
     let { path } = useRouteMatch();
     const [search, setSearch] = useState('');
+
+    const importPublishers = () => {
+        publishersJson.forEach(publisher => {
+            let id = v4();
+            let pub: Publisher = {
+                uid: id,
+                classe: Classe.primary,
+                email: publisher.email,
+                firstName: publisher.firstname,
+                lastName: publisher.lastname,
+                gender: publisher.sex === 'Male' ? Gender.brother : Gender.sister,
+                privilege: publisher.appt.length > 1 ? publisher.appt === 'Elder' ? Privilege.elder : Privilege.ms : Privilege.pub,
+                isInvited: false
+            }
+            firestore.doc(`congregations/${CONG_ID}/publishers/${id}`).set(pub);
+        })
+    }
+
     return (
         <div className="container p-8">
             <div className="mb-2 flex justify-between items-center">
@@ -22,6 +43,12 @@ export default function Publishers() {
                 iconProps={{ iconName: 'AddFriend' }} allowDisabledFocus>
                     Add Publisher
                 </DefaultButton>
+
+                {/* <DefaultButton 
+                onClick={importPublishers}
+                iconProps={{ iconName: 'AddFriend' }} allowDisabledFocus>
+                    Import Publishers
+                </DefaultButton> */}
             </div>
             {
                    value?.docs && value?.docs.map(p => p.data()).length > 0 ?

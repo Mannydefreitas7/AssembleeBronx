@@ -17,7 +17,7 @@ export default function PartContextMenu({ part } : { part: Part }) {
 
     const ref = createRef<HTMLDivElement>();
     const linkRef = React.useRef(ref);
-    const [clipboard, copyToClipboard] = useClipboard()
+    const [, copyToClipboard] = useClipboard()
     const emailService = new EmailService();
     const exportService = new ExportService();
     const { congregation, functions, openRenameModal, firestore, auth } = useContext(GlobalContext);
@@ -46,7 +46,7 @@ export default function PartContextMenu({ part } : { part: Part }) {
             return false
         }
       }
-      if (part.parent === Parent.treasures && part.index === 2) {
+      if (part.parent === Parent.treasures) {
         if (part.assignee) {
             return false
         }
@@ -71,14 +71,14 @@ export default function PartContextMenu({ part } : { part: Part }) {
         }
         firestore.doc(`congregations/${CONG_ID}/weeks/${part.week}/parts/${part.id}`).update({ isConfirmed: false })
     }
-    // const deletePart = () => {
-    //     if (part.assignee) {
-    //     firestore.doc(`congregations/${CONG_ID}/publishers/${part.assignee.uid}/parts/${part.id}`).delete()
-    //     } else if (part.assistant) {
-    //     firestore.doc(`congregations/${CONG_ID}/publishers/${part.assistant.uid}/parts/${part.id}`).delete()
-    //     }
-    //     firestore.doc(`congregations/${CONG_ID}/weeks/${part.week}/parts/${part.id}`).delete()
-    // }
+    const deletePart = () => {
+        if (part.assignee) {
+        firestore.doc(`congregations/${CONG_ID}/publishers/${part.assignee.uid}/parts/${part.id}`).delete()
+        } else if (part.assistant) {
+        firestore.doc(`congregations/${CONG_ID}/publishers/${part.assistant.uid}/parts/${part.id}`).delete()
+        }
+        firestore.doc(`congregations/${CONG_ID}/weeks/${part.week}/parts/${part.id}`).delete()
+    }
 
   const sending : Mail.Address = {
       name: congregation.properties?.orgName ?? 'Congregation',
@@ -105,8 +105,8 @@ export default function PartContextMenu({ part } : { part: Part }) {
         iconProps: { iconName: part.isEmailed ? 'MailCheck' : 'Mail' },
       },
       {
-        key: 'rename',
-        text: 'Rename',
+        key: 'edit',
+        text: 'Edit Part',
         onClick: () => { openRenameModal(part) },
         iconProps: { iconName: 'Rename' },
       },
@@ -135,12 +135,12 @@ export default function PartContextMenu({ part } : { part: Part }) {
         iconProps: { iconName: part.isConfirmed ? 'Cancel' : 'CheckMark' },
         onClick: () => { part.isConfirmed ? cancelPart() : confirmPart() }
       },
-    //   {
-    //     key: 'delete',
-    //     text: 'Delete',
-    //     iconProps: { iconName: 'Trash' },
-    //     onClick: () => { deletePart() }
-    //   },
+      {
+        key: 'delete',
+        text: 'Delete',
+        iconProps: { iconName: 'Trash' },
+        onClick: () => { deletePart() }
+      },
   ];
 
 
