@@ -33,7 +33,7 @@ export default function Invite() {
 
     useEffect(() => {
         auth.signInAnonymously();
-    }, [])
+    }, [auth])
 
     const [email, setEmail] = useState<string>(oldPublisher?.email ?? "");
     const createUser = async (credential: firebase.auth.UserCredential) : Promise<any> => {

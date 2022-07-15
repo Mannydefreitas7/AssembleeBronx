@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Dropdown, Icon, IconButton, IDropdownOption, PrimaryButton, TextField } from '@fluentui/react';
-import { Parent, Part } from '../models/wol';
+import { Part } from '../models/wol';
 import { useAlert } from 'react-alert';
 
 import { GlobalContext } from '../store/GlobalState';
@@ -40,16 +40,16 @@ export default function EditPartView({part}:{part: Part}) {
         { key: 4, text: '5' },
     ]; 
 
-    const parents: IDropdownOption[] = [
-        { key: 0, data: Parent.prayer, text: 'Priere' },
-        { key: 1, data: Parent.chairman, text: 'President' },
-        { key: 2, data: Parent.treasures, text: 'Perles Spirituelles' },
-        { key: 3, data: Parent.apply, text: 'Appliquons' },
-        { key: 4, data: Parent.life, text: 'Vie Chretienne' },
-        { key: 5, data: Parent.secondary, text: 'Classe Secondaire' },
-        { key: 6, data: Parent.talk, text: 'Discours' },
-        { key: 7, data: Parent.wt, text: 'Tour De Garde' },
-    ]; 
+    // const parents: IDropdownOption[] = [
+    //     { key: 0, data: Parent.prayer, text: 'Priere' },
+    //     { key: 1, data: Parent.chairman, text: 'President' },
+    //     { key: 2, data: Parent.treasures, text: 'Perles Spirituelles' },
+    //     { key: 3, data: Parent.apply, text: 'Appliquons' },
+    //     { key: 4, data: Parent.life, text: 'Vie Chretienne' },
+    //     { key: 5, data: Parent.secondary, text: 'Classe Secondaire' },
+    //     { key: 6, data: Parent.talk, text: 'Discours' },
+    //     { key: 7, data: Parent.wt, text: 'Tour De Garde' },
+    // ]; 
 
     return (
         <>

@@ -3,7 +3,6 @@ import { Icon, Pivot, PivotItem, Spinner, Text } from '@fluentui/react';
 import MeetingView from '../components/MeetingView';
 import { NeutralColors, SharedColors } from '@fluentui/theme';
 import { GlobalContext } from '../store/GlobalState';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link } from 'react-router-dom';
 import ServiceMeetingView from './ServiceMeetingView';
 import GroupView from './GroupView';
@@ -11,22 +10,23 @@ export default function Board() {
 
 
   const { auth } = useContext(GlobalContext)
-  const [ user, loading ] = useAuthState(auth);
 
-  const signIn = async () => {
+
+  const signIn = async () => { 
       try {
           await auth.signInAnonymously()
-      } catch (error) {
+      } catch (error) { 
           console.log(error)
       }
   } 
 
   useEffect(() => {
-      if (!user) {
+    console.log(auth)
+      if (!auth.currentUser) {
           signIn() 
       }
       // eslint-disable-next-line
-  }, [user])
+  }, [])
     
       const PivotTabs = () => (
         <div className="container mx-auto pb-10 pt-4 px-4">
@@ -36,13 +36,13 @@ export default function Board() {
             <span className="text-2xl text-black">Bronx Concourse French - New York NY (USA)</span>
           </Text>
           {
-            user ?
+            auth.currentUser ?
             <Link 
                 style={{ color: SharedColors.green20}}
                 className="py-4 items-center inline-flex text-center"
-                to={user.isAnonymous ? '/login' : '/admin'}>
-                <Icon iconName={user.isAnonymous ? 'SchoolDataSyncLogo' : 'FollowUser'} className="mr-2"/>
-                <Text>{ user.isAnonymous ? 'Login' : 'Dashboard' }</Text>
+                to={auth.currentUser.isAnonymous ? '/login' : '/admin'}>
+                <Icon iconName={auth.currentUser.isAnonymous ? 'SchoolDataSyncLogo' : 'FollowUser'} className="mr-2"/>
+                <Text>{ auth.currentUser.isAnonymous ? 'Login' : 'Dashboard' }</Text>
             </Link> : null
           }
               
@@ -72,6 +72,6 @@ export default function Board() {
         </div>
       );
 
-    return loading ? <Spinner className="mt-64" /> : <PivotTabs />
+    return !auth.currentUser ? <Spinner className="mt-64" /> : <PivotTabs />
       
 }

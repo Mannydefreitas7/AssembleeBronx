@@ -6,7 +6,6 @@ import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/functions'
 import 'firebase/storage'
-import talks from './../assets/talks.json';
 
 import {
     CHANGE_WEEK,
@@ -28,8 +27,7 @@ import { Parent, Part, PartType, WeekProgram } from '../models/wol';
 import { config, CONG_ID } from '../constants';
 import { IDropdownOption } from '@fluentui/react';
 import { useBoolean } from '@fluentui/react-hooks';
-import { Permission, Publisher, Talk } from '../models/publisher';
-import { Congregation, FireLanguage } from '../models/congregation';
+import {  Publisher, Talk } from '../models/publisher';
 import AddProgramView from '../components/AddProgramView';
 import ExportOptionsView from '../components/ExportOptionsView';
 import EditPartView from '../components/EditPartView';
@@ -39,78 +37,76 @@ import { useMediaQuery } from 'react-responsive';
 import AddGroupView from '../components/AddGroupView';
 import EditGroupView from '../components/EditGroupView';
 import AddPartView from '../components/AddPartView';
-import { User } from '../models/user';
-
 
 type GlobalProps = {
     children: ReactNode
 }
 
 const _firebase: firebase.app.App = firebase.apps.length === 0 ? firebase.initializeApp(config) : firebase.app()
-if (process.env.NODE_ENV === 'development') {
+// if (process.env.NODE_ENV === 'development') {
 
-    let user: User = {
-        congregation: "0927216B-2451-4AB5-AD08-11AC5777CCB1",
-        email: "manny.defreitas7@gmail.com",
-        firstName: "Manuel",
-        isEmailVerified: true,
-        isOnline: true,
-        lastName: "De Freitas",
-        permissions: [
-            Permission.admin,
-            Permission.programs,
-            Permission.publishers,
-            Permission.speakers
-        ],
-        uid: "AVf0cPTeWyZjUztd1BAzHkoWsR42"
-    }
+//     // let user: User = {
+//     //     congregation: "0927216B-2451-4AB5-AD08-11AC5777CCB1",
+//     //     email: "manny.defreitas7@gmail.com",
+//     //     firstName: "Manuel",
+//     //     isEmailVerified: true,
+//     //     isOnline: true,
+//     //     lastName: "De Freitas",
+//     //     permissions: [
+//     //         Permission.admin,
+//     //         Permission.programs,
+//     //         Permission.publishers,
+//     //         Permission.speakers
+//     //     ],
+//     //     uid: "AVf0cPTeWyZjUztd1BAzHkoWsR42"
+//     // }
 
-    // eslint-disable-next-line
-    let congregation: Congregation = {
-        id: '5F29D4C5-F670-49D2-9B43-82DEE725389',
-        fireLanguage: {
-            apiURL: "wol/dt/r30/lp-f/",
-            languageCode: "F"
-        },
-        language: {
-            isSignLanguage: false,
-            languageCode: 'F',
-            languageName: 'Francais',
-            scriptDirection: 'LTR',
-            writtenLanguageCode: ['fr']
-        },
-        properties: {
-            orgName: 'Bronx Concourse French - New York NY (USA)',
-            orgGuid: '5F29D4C5-F670-49D2-9B43-82DEE725389'
-        }
-    }
-    // eslint-disable-next-line
-    let language: FireLanguage = {
-        apiURL: 'wol/dt/r30/lp-f/',
-        languageCode: 'F'
-    }
-    // eslint-disable-next-line
-    let _talks : Talk[] = talks.map(t => {
-        return {
-            id: `${t.DocumentId}`,
-            number: t.DocumentId + 1,
-            timeStamp: new Date(),
-            title: t.Title
-        }
-    })
-
-
-  //  _firebase.functions().useEmulator("localhost", 5001)
-  //  _firebase.firestore().useEmulator("localhost", 8080)
-  //  _firebase.auth().useEmulator("http://localhost:9099");
-//    _firebase.firestore().doc(`congregations/${congregation.id}`).set(congregation);
-//    _firebase.firestore().doc(`languages/${language.languageCode}`).set(language);
-//     _talks.forEach(talk => {
-//         _firebase.firestore().doc(`languages/${language.languageCode}/talks/${talk.id}`).set(talk)
+//     // eslint-disable-next-line
+//     let congregation: Congregation = {
+//         id: '5F29D4C5-F670-49D2-9B43-82DEE725389',
+//         fireLanguage: {
+//             apiURL: "wol/dt/r30/lp-f/",
+//             languageCode: "F"
+//         },
+//         language: {
+//             isSignLanguage: false,
+//             languageCode: 'F',
+//             languageName: 'Francais',
+//             scriptDirection: 'LTR',
+//             writtenLanguageCode: ['fr']
+//         },
+//         properties: {
+//             orgName: 'Bronx Concourse French - New York NY (USA)',
+//             orgGuid: '5F29D4C5-F670-49D2-9B43-82DEE725389'
+//         }
+//     }
+//     // eslint-disable-next-line
+//     let language: FireLanguage = {
+//         apiURL: 'wol/dt/r30/lp-f/',
+//         languageCode: 'F'
+//     }
+//     // eslint-disable-next-line
+//     let _talks : Talk[] = talks.map(t => {
+//         return {
+//             id: `${t.DocumentId}`,
+//             number: t.DocumentId + 1,
+//             timeStamp: new Date(),
+//             title: t.Title
+//         }
 //     })
-}
- 
 
+
+//   //  _firebase.functions().useEmulator("localhost", 5001)
+//   //  _firebase.firestore().useEmulator("localhost", 8080)
+//   //  _firebase.auth().useEmulator("http://localhost:9099");
+// //    _firebase.firestore().doc(`congregations/${congregation.id}`).set(congregation);
+// //    _firebase.firestore().doc(`languages/${language.languageCode}`).set(language);
+// //     _talks.forEach(talk => {
+// //         _firebase.firestore().doc(`languages/${language.languageCode}/talks/${talk.id}`).set(talk)
+// //     })
+// }
+ 
+ 
 const initialState: InitialState = {
     parts: [],
     weeks: [],
