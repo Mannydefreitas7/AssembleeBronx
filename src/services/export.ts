@@ -258,7 +258,7 @@ export class ExportService {
             style: 'label',
           },
           {
-            text: `${moment(part.date.toDate()).format('MMMM DD YYYY')}`,
+            text: `${moment(part.date.toDate()).format('MMMM YYYY')}`,
             style: 'value',
           },
         ],

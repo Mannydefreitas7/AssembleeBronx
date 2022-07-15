@@ -1,7 +1,7 @@
 import { Stack } from '@fluentui/react'
 import React, { useContext } from 'react'
-import { Parent, Part, PartType, WeekProgram } from './../models/wol';
-import { apply, chairmans, life, prayers, treasures, bibleReadingSecondary, applySecondary} from '../shared/methods';
+import { Part, PartType, WeekProgram } from './../models/wol';
+import { apply, chairmans, life, prayers, treasures } from '../shared/methods';
 import PartAssigneeButton from './PartAssigneeButton';
 import { GlobalContext } from '../store/GlobalState';
 import PartRemoveButton from './PartRemoveButton';

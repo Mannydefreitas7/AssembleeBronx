@@ -5,8 +5,7 @@ import {
 } from "react-router-dom";
 import Board from './Board';
 import Login from './Login';
-import Admin from './Admin';
-import SignUp from './SignUp';
+import Admin from './Admin'
 import ProtectedRoute from '../components/ProtectedRoute';
 import ConfirmPart from "./ConfirmPart";
 import Invite from "./Invite";
@@ -53,12 +52,12 @@ export default function Home() {
                     <Route path="/invite">
                         <Invite />
                     </Route>
-                    {
+                    {/* {
                         process.env.NODE_ENV === 'development' ?
                             <Route path="/signup">
                                 <SignUp />
                             </Route> : null
-                    }
+                    } */}
                 </Switch>
             </Router>
         </>

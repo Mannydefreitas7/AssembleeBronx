@@ -18,7 +18,8 @@ export default function Login() {
    
     const alert = useAlert()
 
-    const loginWithEmailAndPassword = async () => {
+    const loginWithEmailAndPassword = async (event: FormEvent) => {
+        event.preventDefault()
         try {
             if (email.length > 0 && password.length > 0) {
                 const newCredential = await auth.signInWithEmailAndPassword(email, password)
@@ -51,7 +52,7 @@ export default function Login() {
     return (
         <>
         <div className="flex h-screen w-full justify-center items-center">
-            <div className="w-96 mx-auto p-10">
+            <form className="w-96 mx-auto p-10" onSubmit={loginWithEmailAndPassword}>
                 <div className="w-full flex justify-center mb-5">
                     <img src={logo} className="rounded-full w-28 overflow-hidden" alt="logo" />
                 </div>
@@ -82,12 +83,14 @@ export default function Login() {
                         defaultValue={email}
                         onChange={(event : FormEvent, value) => setEmail(value ?? "")}
                         label="Email"
+                        autoComplete='email'
                         type="email"
                         required/>
                     </div>
                     <TextField
                         defaultValue={password}
                         label="Password"
+                        autoComplete="current-password"
                         onChange={(event : FormEvent, value) => setPassword(value ?? "")}
                         type="password"
                         canRevealPassword
@@ -97,12 +100,13 @@ export default function Login() {
                         <Text className="px-2 mr-4">Go Back</Text>
                     </Link>
                     <PrimaryButton 
-                    text="Login" 
-                    onClick={() => loginWithEmailAndPassword()}
+                    text="Login"
+                    type='submit'
+                    onClick={(e: any) => loginWithEmailAndPassword(e)}
                     className="mt-5"
                     allowDisabledFocus 
                     disabled={false}/>
-            </div>
+            </form>
         </div>
         </>
     )

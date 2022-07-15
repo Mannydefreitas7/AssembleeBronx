@@ -6,10 +6,10 @@ import { GlobalContext } from '../store/GlobalState';
 import { Icon } from '@fluentui/react/lib/Icon';
 import { Link, useRouteMatch } from 'react-router-dom';
 import PublisherTile from '../components/PublisherTile';
-import { Gender, Privilege, Publisher } from '../models/publisher';
-import publishersJson from './../assets/hourglass.json';
-import { v4 } from 'uuid';
-import { Classe } from '../models/group';
+import { Publisher } from '../models/publisher';
+//import publishersJson from './../assets/hourglass.json';
+//import { v4 } from 'uuid';
+//import { Classe } from '../models/group';
 
 export default function Publishers() {
     const { firestore, openPublisherModal } = useContext(GlobalContext)
@@ -17,22 +17,22 @@ export default function Publishers() {
     let { path } = useRouteMatch();
     const [search, setSearch] = useState('');
 
-    const importPublishers = () => {
-        publishersJson.forEach(publisher => {
-            let id = v4();
-            let pub: Publisher = {
-                uid: id,
-                classe: Classe.primary,
-                email: publisher.email,
-                firstName: publisher.firstname,
-                lastName: publisher.lastname,
-                gender: publisher.sex === 'Male' ? Gender.brother : Gender.sister,
-                privilege: publisher.appt.length > 1 ? publisher.appt === 'Elder' ? Privilege.elder : Privilege.ms : Privilege.pub,
-                isInvited: false
-            }
-            firestore.doc(`congregations/${CONG_ID}/publishers/${id}`).set(pub);
-        })
-    }
+    // const importPublishers = () => {
+    //     publishersJson.forEach(publisher => {
+    //         let id = v4();
+    //         let pub: Publisher = {
+    //             uid: id,
+    //             classe: Classe.primary,
+    //             email: publisher.email,
+    //             firstName: publisher.firstname,
+    //             lastName: publisher.lastname,
+    //             gender: publisher.sex === 'Male' ? Gender.brother : Gender.sister,
+    //             privilege: publisher.appt.length > 1 ? publisher.appt === 'Elder' ? Privilege.elder : Privilege.ms : Privilege.pub,
+    //             isInvited: false
+    //         }
+    //         firestore.doc(`congregations/${CONG_ID}/publishers/${id}`).set(pub);
+    //     })
+    // }
 
     return (
         <div className="container p-8">

@@ -1,5 +1,4 @@
 import { Icon } from '@fluentui/react'
-import moment from 'moment'
 import React from 'react'
 import { Parent, Part } from '../models/wol';
 import { SharedColors } from '@fluentui/theme';
@@ -9,7 +8,7 @@ export default function SmallPartTile({ part } : { part: Part }) {
         <div className="p-4 flex justify-start items-center bg-gray-100 my-2 rounded">
             <Icon iconName="FileComment" className="mr-6 text-lg"/>
             <div className="block">
-                <span className="text-gray-600 text-xs">{moment(part?.date?.toDate()).format('Do MMMM YYYY')}</span> <br/>
+                {/* <span className="text-gray-600 text-xs">{moment(part?.date).format('Do MMMM YYYY')}</span> <br/> */}
                 <span className="text-sm font-semibold">{part.title}</span> 
                 <div className="flex items-center py-1">
                     <span 

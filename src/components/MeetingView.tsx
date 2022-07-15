@@ -3,11 +3,10 @@ import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { Dropdown, IDropdownOption } from '@fluentui/react/lib/Dropdown';
 import { Parent, Part, WeekProgram } from '../models/wol';
-import { apply, chairmans, life, prayers, talk, treasures, wt, applySecondary, bibleReadingSecondary } from '../shared/methods';
+import { apply, chairmans, life, prayers, treasures, applySecondary, bibleReadingSecondary } from '../shared/methods';
 import { GlobalContext } from '../store/GlobalState';
 import { DefaultButton, Text } from '@fluentui/react';
 import { ExportService } from '../services/export';
-import { useEffect } from 'react';
 
 
 export default function MeetingView() {
